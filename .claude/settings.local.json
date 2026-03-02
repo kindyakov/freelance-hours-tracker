@@ -10,7 +10,12 @@
       "Bash(npx tsc:*)",
       "Bash(npm run build:*)",
       "Bash(npx prisma migrate dev:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(vercel --version:*)",
+      "Bash(npx vercel --version)",
+      "Bash(vercel whoami:*)",
+      "Bash(vercel login:*)",
+      "Bash(vercel:*)"
     ]
   }
 }
