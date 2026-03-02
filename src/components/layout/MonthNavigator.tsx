@@ -3,7 +3,10 @@
 import { ActionIcon, Text } from '@mantine/core'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import dayjs from 'dayjs'
+import 'dayjs/locale/ru'
 import { useAppStore } from '@/store/useAppStore'
+
+dayjs.locale('ru')
 
 export function MonthNavigator() {
   const { selectedMonth, setSelectedMonth } = useAppStore()
@@ -19,13 +22,13 @@ export function MonthNavigator() {
 
   return (
     <div className="flex items-center gap-2">
-      <ActionIcon variant="subtle" onClick={prev} aria-label="Previous month">
+      <ActionIcon variant="subtle" onClick={prev} aria-label="Предыдущий месяц">
         <ChevronLeft size={16} />
       </ActionIcon>
-      <Text fw={600} size="sm" className="min-w-28 text-center">
+      <Text fw={600} size="sm" className="min-w-32 text-center capitalize">
         {current.format('MMMM YYYY')}
       </Text>
-      <ActionIcon variant="subtle" onClick={next} aria-label="Next month">
+      <ActionIcon variant="subtle" onClick={next} aria-label="Следующий месяц">
         <ChevronRight size={16} />
       </ActionIcon>
     </div>

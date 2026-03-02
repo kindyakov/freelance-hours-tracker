@@ -19,7 +19,7 @@ export function EarningsInput({ initialAmount }: Props) {
   const form = useForm({
     initialValues: { amount: initialAmount ?? 0 },
     validate: {
-      amount: (v) => (v > 0 ? null : 'Amount must be greater than 0'),
+      amount: (v) => (v > 0 ? null : 'Сумма должна быть больше нуля'),
     },
   })
 
@@ -31,14 +31,14 @@ export function EarningsInput({ initialAmount }: Props) {
         currency: 'RUB',
       })
       notifications.show({
-        title: 'Earnings saved',
-        message: `Set to ${formatRub(values.amount)} for ${dayjs(selectedMonth).format('MMMM YYYY')}`,
+        title: 'Заработок сохранён',
+        message: `${formatRub(values.amount)} за ${dayjs(selectedMonth).format('MMMM YYYY')}`,
         color: 'green',
       })
     } catch {
       notifications.show({
-        title: 'Error',
-        message: 'Failed to save earnings',
+        title: 'Ошибка',
+        message: 'Не удалось сохранить заработок',
         color: 'red',
       })
     }
@@ -47,12 +47,12 @@ export function EarningsInput({ initialAmount }: Props) {
   return (
     <Paper p="md" radius="md" withBorder>
       <Text fw={600} mb="sm">
-        Monthly Earnings ({dayjs(selectedMonth).format('MMMM YYYY')})
+        Заработок за {dayjs(selectedMonth).format('MMMM YYYY')}
       </Text>
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Group align="flex-end" gap="sm">
           <NumberInput
-            label="Amount (₽)"
+            label="Сумма (₽)"
             placeholder="50000"
             min={0}
             step={1000}
@@ -60,7 +60,7 @@ export function EarningsInput({ initialAmount }: Props) {
             className="flex-1"
           />
           <Button type="submit" loading={isPending}>
-            Save
+            Сохранить
           </Button>
         </Group>
       </form>

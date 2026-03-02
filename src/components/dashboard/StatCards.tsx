@@ -8,28 +8,28 @@ type Props = { stats: MonthlyStats }
 const CARDS = [
   {
     key: 'totalHours' as const,
-    label: 'Total Hours',
+    label: 'Всего часов',
     icon: Clock,
     color: 'blue',
     format: (v: number) => formatHours(v),
   },
   {
     key: 'totalDays' as const,
-    label: 'Days Logged',
+    label: 'Дней',
     icon: CalendarDays,
     color: 'teal',
     format: (v: number) => `${v}`,
   },
   {
     key: 'avgHoursPerDay' as const,
-    label: 'Avg / Day',
+    label: 'Среднее / день',
     icon: TrendingUp,
     color: 'violet',
     format: (v: number) => formatHours(v),
   },
   {
     key: 'earnings' as const,
-    label: 'Earnings',
+    label: 'Заработок',
     icon: Wallet,
     color: 'green',
     format: (v: number) => formatRub(v),

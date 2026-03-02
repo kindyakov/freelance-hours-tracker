@@ -34,23 +34,23 @@ export const DayEntryCard = memo(function DayEntryCard({
           <Badge variant="light" color="blue">
             {formatHours(totalHours)}
           </Badge>
-          <Tooltip label="Edit">
+          <Tooltip label="Редактировать">
             <ActionIcon
               variant="subtle"
               size="sm"
               onClick={() => onEdit(dayjs(record.date).format('YYYY-MM-DD'))}
-              aria-label="Edit record"
+              aria-label="Редактировать запись"
             >
               <Pencil size={14} />
             </ActionIcon>
           </Tooltip>
-          <Tooltip label="Delete">
+          <Tooltip label="Удалить">
             <ActionIcon
               variant="subtle"
               color="red"
               size="sm"
               onClick={() => onDelete(record.id)}
-              aria-label="Delete record"
+              aria-label="Удалить запись"
             >
               <Trash2 size={14} />
             </ActionIcon>

@@ -8,9 +8,9 @@ import { signOutAction } from '@/actions/auth'
 import { useSession } from 'next-auth/react'
 
 const NAV_ITEMS = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/log', label: 'Log Hours', icon: ClipboardList },
-  { href: '/history', label: 'History', icon: History },
+  { href: '/dashboard', label: 'Дашборд', icon: LayoutDashboard },
+  { href: '/log', label: 'Учёт часов', icon: ClipboardList },
+  { href: '/history', label: 'История', icon: History },
 ]
 
 export function Sidebar() {
@@ -59,7 +59,7 @@ export function Sidebar() {
               leftSection={<LogOut size={14} />}
               fullWidth
             >
-              Sign out
+              Выйти
             </Button>
           </form>
         </div>

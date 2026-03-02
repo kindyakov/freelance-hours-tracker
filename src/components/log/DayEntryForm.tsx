@@ -60,15 +60,15 @@ export function DayEntryForm() {
     const timeRegex = /^\d{2}:\d{2}$/
 
     if (!date) {
-      newErrors.date = 'Date is required'
+      newErrors.date = 'Укажите дату'
     }
 
     segments.forEach((seg, i) => {
       if (!timeRegex.test(seg.start)) {
-        newErrors[`seg-${i}-start`] = 'HH:MM required'
+        newErrors[`seg-${i}-start`] = 'Формат ЧЧ:ММ'
       }
       if (!timeRegex.test(seg.end)) {
-        newErrors[`seg-${i}-end`] = 'HH:MM required'
+        newErrors[`seg-${i}-end`] = 'Формат ЧЧ:ММ'
       }
     })
 
@@ -87,8 +87,8 @@ export function DayEntryForm() {
         segments,
       })
       notifications.show({
-        title: 'Record saved',
-        message: `Logged ${formatHours(totalHoursForSegments(segments))} for ${dayjs(date).format('D MMM')}`,
+        title: 'Запись сохранена',
+        message: `Записано ${formatHours(totalHoursForSegments(segments))} за ${dayjs(date).format('D MMM')}`,
         color: 'green',
       })
       // Reset form
@@ -96,8 +96,8 @@ export function DayEntryForm() {
       setNotes('')
     } catch {
       notifications.show({
-        title: 'Error',
-        message: 'Failed to save record',
+        title: 'Ошибка',
+        message: 'Не удалось сохранить запись',
         color: 'red',
       })
     }
@@ -113,8 +113,8 @@ export function DayEntryForm() {
       <form onSubmit={handleSubmit}>
         <Stack gap="md">
           <DateInput
-            label="Date"
-            placeholder="Pick a date"
+            label="Дата"
+            placeholder="Выберите дату"
             value={date}
             onChange={(v) => setDate(v ? new Date(v) : null)}
             error={errors.date}
@@ -123,7 +123,7 @@ export function DayEntryForm() {
 
           <div>
             <Text size="sm" fw={500} mb="xs">
-              Time Segments
+              Временные промежутки
             </Text>
             <Stack gap="xs">
               {segments.map((seg, i) => (
@@ -148,21 +148,21 @@ export function DayEntryForm() {
               onClick={addSegment}
               mt="xs"
             >
-              Add segment
+              Добавить промежуток
             </Button>
           </div>
 
           {totalHours > 0 ? (
             <Text size="sm" c="blue">
-              Total: {formatHours(totalHours)}
+              Итого: {formatHours(totalHours)}
             </Text>
           ) : null}
 
           <Divider />
 
           <Textarea
-            label="Notes (optional)"
-            placeholder="What did you work on?"
+            label="Заметки (необязательно)"
+            placeholder="Над чем работали?"
             value={notes}
             onChange={(e) => setNotes(e.currentTarget.value)}
             maxLength={500}
@@ -172,7 +172,7 @@ export function DayEntryForm() {
 
           <Group justify="flex-end">
             <Button type="submit" loading={isPending}>
-              Save Record
+              Сохранить
             </Button>
           </Group>
         </Stack>

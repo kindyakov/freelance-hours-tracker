@@ -2,7 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   experimental: {
-    optimizePackageImports: ['lucide-react', '@mantine/core', '@mantine/charts'],
+    // Mantine v8 manages its own tree-shaking — adding it here breaks
+    // compound components (Table.ScrollContainer, etc.) at runtime.
+    optimizePackageImports: ['lucide-react'],
   },
 };
 

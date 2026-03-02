@@ -11,12 +11,12 @@ export function formatRub(amount: number): string {
 export function formatHours(hours: number): string {
   const h = Math.floor(hours)
   const m = Math.round((hours - h) * 60)
-  if (m === 0) return `${h}h`
-  return `${h}h ${m}m`
+  if (m === 0) return `${h}ч`
+  return `${h}ч ${m}м`
 }
 
 export function formatDate(isoDate: string): string {
-  return new Date(isoDate).toLocaleDateString('en-GB', {
+  return new Date(isoDate).toLocaleDateString('ru-RU', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',

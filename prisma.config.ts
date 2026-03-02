@@ -1,4 +1,8 @@
 import { defineConfig } from 'prisma/config'
+import { loadEnvConfig } from '@next/env'
+
+// Prisma CLI does not read .env.local — load it the same way Next.js does.
+loadEnvConfig(process.cwd())
 
 export default defineConfig({
   schema: 'prisma/schema.prisma',

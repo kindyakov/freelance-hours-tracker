@@ -51,7 +51,7 @@ export default async function DashboardPage() {
 
   return (
     <Stack gap="lg">
-      <Title order={2}>Dashboard</Title>
+      <Title order={2}>Дашборд</Title>
 
       <Suspense fallback={<StatCardsSkeleton />}>
         <StatCards stats={stats} />

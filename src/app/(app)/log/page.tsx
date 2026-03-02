@@ -20,14 +20,14 @@ export default function LogPage() {
     try {
       await deleteRecord(id)
       notifications.show({
-        title: 'Deleted',
-        message: 'Record removed',
+        title: 'Удалено',
+        message: 'Запись удалена',
         color: 'orange',
       })
     } catch {
       notifications.show({
-        title: 'Error',
-        message: 'Failed to delete record',
+        title: 'Ошибка',
+        message: 'Не удалось удалить запись',
         color: 'red',
       })
     }
@@ -43,7 +43,7 @@ export default function LogPage() {
 
   return (
     <Stack gap="lg">
-      <Title order={2}>Log Hours</Title>
+      <Title order={2}>Учёт часов</Title>
 
       <EarningsInput initialAmount={earning?.amount} />
 
@@ -53,11 +53,11 @@ export default function LogPage() {
 
       <div>
         <Title order={4} mb="sm">
-          {monthLabel} — {records.length} day{records.length !== 1 ? 's' : ''}
+          {monthLabel} — {records.length} {records.length === 1 ? 'день' : records.length < 5 ? 'дня' : 'дней'}
         </Title>
 
         {isLoading ? (
-          <Text c="dimmed">Loading…</Text>
+          <Text c="dimmed">Загрузка…</Text>
         ) : records.length > 0 ? (
           <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="sm">
             {records.map((record) => (
@@ -71,7 +71,7 @@ export default function LogPage() {
           </SimpleGrid>
         ) : (
           <Text c="dimmed" ta="center" py="xl">
-            No records for {monthLabel}. Add one above.
+            Записей за {monthLabel} нет. Добавьте выше.
           </Text>
         )}
       </div>

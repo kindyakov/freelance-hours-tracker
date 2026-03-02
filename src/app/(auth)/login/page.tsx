@@ -18,7 +18,7 @@ export default async function LoginPage() {
                 FreelanceHours
               </Title>
               <Text c="dimmed" size="sm">
-                Track your hours and earnings
+                Учёт часов и заработка
               </Text>
             </div>
 
@@ -29,12 +29,12 @@ export default async function LoginPage() {
                 leftSection={<Github size={16} />}
                 variant="filled"
               >
-                Continue with GitHub
+                Войти через GitHub
               </Button>
             </form>
 
             <Text size="xs" c="dimmed" ta="center">
-              Personal tool — only your GitHub account has access.
+              Личный инструмент — доступ только с вашего GitHub аккаунта.
             </Text>
           </Stack>
         </Paper>

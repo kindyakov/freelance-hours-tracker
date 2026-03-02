@@ -21,13 +21,13 @@ export default function HoursBarChart({ records }: Props) {
   return (
     <Paper p="md" radius="md" withBorder>
       <Text fw={600} mb="md">
-        Daily Hours
+        Часы по дням
       </Text>
       <BarChart
         h={220}
         data={data}
         dataKey="day"
-        series={[{ name: 'hours', color: 'blue.6', label: 'Hours' }]}
+        series={[{ name: 'hours', color: 'blue.6', label: 'Часы' }]}
         tickLine="none"
         gridAxis="y"
         withTooltip

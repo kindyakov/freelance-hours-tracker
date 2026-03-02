@@ -16,15 +16,15 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'FreelanceHours Tracker',
-  description: 'Track your freelance hours and earnings',
+  title: 'Учёт часов',
+  description: 'Учёт рабочих часов и заработка фрилансера',
 }
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ru" suppressHydrationWarning>
       <head>
         <ColorSchemeScript defaultColorScheme="dark" />
       </head>

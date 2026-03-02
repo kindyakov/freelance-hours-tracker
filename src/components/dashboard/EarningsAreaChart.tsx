@@ -20,13 +20,13 @@ export default function EarningsAreaChart({ data }: Props) {
   return (
     <Paper p="md" radius="md" withBorder>
       <Text fw={600} mb="md">
-        Earnings Trend
+        Динамика заработка
       </Text>
       <AreaChart
         h={220}
         data={chartData}
         dataKey="month"
-        series={[{ name: 'earnings', color: 'green.6', label: 'Earnings (₽)' }]}
+        series={[{ name: 'earnings', color: 'green.6', label: 'Заработок (₽)' }]}
         tickLine="none"
         gridAxis="y"
         withTooltip

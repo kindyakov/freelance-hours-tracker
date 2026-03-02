@@ -43,7 +43,7 @@ export default async function HistoryPage() {
 
   return (
     <Stack gap="xl">
-      <Title order={2}>History</Title>
+      <Title order={2}>История</Title>
 
       {months.length > 0 ? (
         months.map(([monthKey, records]) => {
@@ -64,7 +64,7 @@ export default async function HistoryPage() {
                     {formatHours(totalHours)}
                   </Badge>
                   <Badge variant="light" color="teal">
-                    {records.length} days
+                    {records.length} {records.length === 1 ? 'день' : records.length < 5 ? 'дня' : 'дней'}
                   </Badge>
                   {earning ? (
                     <Badge variant="light" color="green">
@@ -80,7 +80,7 @@ export default async function HistoryPage() {
         })
       ) : (
         <Text c="dimmed" ta="center" py="xl">
-          No records yet. Start logging hours in the Log screen.
+          Записей пока нет. Начните учёт часов на странице «Учёт часов».
         </Text>
       )}
     </Stack>

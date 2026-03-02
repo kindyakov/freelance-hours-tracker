@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation'
 import { LayoutDashboard, ClipboardList, History } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/log', label: 'Log', icon: ClipboardList },
-  { href: '/history', label: 'History', icon: History },
+  { href: '/dashboard', label: 'Дашборд', icon: LayoutDashboard },
+  { href: '/log', label: 'Учёт', icon: ClipboardList },
+  { href: '/history', label: 'История', icon: History },
 ]
 
 export function BottomNav() {

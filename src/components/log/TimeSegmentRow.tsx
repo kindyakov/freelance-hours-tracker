@@ -35,24 +35,24 @@ export const TimeSegmentRow = memo(function TimeSegmentRow({
   return (
     <Group align="flex-start" gap="sm">
       <TextInput
-        label={index === 0 ? 'Start' : undefined}
+        label={index === 0 ? 'Начало' : undefined}
         placeholder="09:00"
         value={start}
         onChange={(e) => onStartChange(e.currentTarget.value)}
         error={startError}
         size="sm"
         className="w-24"
-        aria-label={`Segment ${index + 1} start time`}
+        aria-label={`Промежуток ${index + 1} начало`}
       />
       <TextInput
-        label={index === 0 ? 'End' : undefined}
+        label={index === 0 ? 'Конец' : undefined}
         placeholder="17:30"
         value={end}
         onChange={(e) => onEndChange(e.currentTarget.value)}
         error={endError}
         size="sm"
         className="w-24"
-        aria-label={`Segment ${index + 1} end time`}
+        aria-label={`Промежуток ${index + 1} конец`}
       />
 
       {hours !== null ? (
@@ -70,7 +70,7 @@ export const TimeSegmentRow = memo(function TimeSegmentRow({
         onClick={onRemove}
         disabled={!canRemove}
         className={index === 0 ? 'mt-6' : ''}
-        aria-label="Remove segment"
+        aria-label="Удалить промежуток"
       >
         <Trash2 size={14} />
       </ActionIcon>
