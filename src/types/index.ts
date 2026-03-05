@@ -1,8 +1,12 @@
+export type { ActivityCategory } from '@prisma/client'
+import type { ActivityCategory } from '@prisma/client'
+
 export type Segment = {
   id: string
   start: string // HH:MM
   end: string // HH:MM
   order: number
+  category: ActivityCategory
 }
 
 export type DayRecord = {
@@ -12,11 +16,12 @@ export type DayRecord = {
   segments: Segment[]
 }
 
-export type MonthlyEarning = {
-  id: string
-  month: string // ISO date of the 1st of the month
-  amount: number
+export type EarningEntry = {
+  id:       string
+  date:     string // ISO date of the specific payment day
+  amount:   number
   currency: string
+  note:     string | null
 }
 
 export type MonthlyStats = {
@@ -24,6 +29,7 @@ export type MonthlyStats = {
   totalDays: number
   avgHoursPerDay: number
   earnings: number
+  byCategory: Record<ActivityCategory, number>
 }
 
 // Extends the NextAuth session type to include user.id

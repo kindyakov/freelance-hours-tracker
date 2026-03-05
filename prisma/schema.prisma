@@ -46,8 +46,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  records       Record[]
-  earnings      Earning[]
+  records        Record[]
+  earningEntries EarningEntry[]
 }
 
 model VerificationToken {
@@ -59,6 +59,13 @@ model VerificationToken {
 }
 
 // ─── Application tables ────────────────────────────────────────────────────
+
+enum ActivityCategory {
+  WORK
+  LEARNING
+  PERSONAL
+  OTHER
+}
 
 model Record {
   id        String    @id @default(cuid())
@@ -77,20 +84,20 @@ model Segment {
   id       String @id @default(cuid())
   recordId String
   record   Record @relation(fields: [recordId], references: [id], onDelete: Cascade)
-  start    String // HH:MM
-  end      String // HH:MM
-  order    Int    @default(0)
+  start    String           // HH:MM
+  end      String           // HH:MM
+  order    Int              @default(0)
+  category ActivityCategory @default(WORK)
 }
 
-model Earning {
+model EarningEntry {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  month     DateTime @db.Date // always the 1st of the month
+  date      DateTime @db.Date // конкретная дата платежа
   amount    Float
   currency  String   @default("RUB")
+  note      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([userId, month])
 }

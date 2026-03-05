@@ -12,14 +12,19 @@
 }
 
 :root {
-  --bg: #0f1117;
-  --surface: #1a1d27;
-  --border: #2a2d3a;
+  --bg: #0d0b08;
+  --surface: #161210;
+  --border: #2c2318;
 }
 
 html,
 body {
   height: 100%;
   background-color: var(--bg);
-  color: #e4e4e7;
+  color: #e8e0d5;
+}
+
+/* Mantine's dark mode body background should match our --bg */
+[data-mantine-color-scheme='dark'] {
+  background-color: var(--bg);
 }

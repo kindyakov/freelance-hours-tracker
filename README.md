@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Учёт рабочих часов
 
-## Getting Started
+Приложение для трекинга рабочего времени и заработка фрилансера. Позволяет фиксировать временные промежутки по категориям, добавлять заработок частями с разбивкой по датам и анализировать продуктивность через графики и статистику.
 
-First, run the development server:
+## Возможности
+
+- **Журнал рабочего времени** — добавление временных промежутков (начало/конец) с категориями: работа, встреча, обучение и др.
+- **Учёт заработка** — несколько платежей в месяц с конкретными датами, автосумма по месяцу
+- **Дашборд** — статистика по часам и заработку за выбранный месяц, тепловая карта активности, bar chart по дням
+- **История** — помесячная сводка часов и заработка за всё время
+- **Авторизация** — вход через GitHub OAuth
+
+## Стек
+
+| Слой | Технология |
+|------|------------|
+| Фреймворк | Next.js 16 (App Router) |
+| UI | Mantine v8 + Tailwind v4 |
+| База данных | Supabase PostgreSQL + Prisma 7 |
+| Авторизация | NextAuth v5 (GitHub OAuth) |
+| Клиентский стейт | Zustand + TanStack Query |
+| Деплой | Vercel |
+
+## Запуск локально
 
 ```bash
+# Установка зависимостей
+npm install
+
+# Настройка переменных окружения
+cp .env.example .env.local
+# Заполните DATABASE_URL, DIRECT_URL, AUTH_SECRET, AUTH_GITHUB_ID, AUTH_GITHUB_SECRET, NEXTAUTH_URL
+
+# Применение миграций
+npx prisma migrate deploy
+npx prisma generate
+
+# Запуск dev-сервера
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Откройте [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Переменные окружения
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Переменная | Описание |
+|------------|----------|
+| `DATABASE_URL` | Pooled Supabase connection (`?pgbouncer=true`) |
+| `DIRECT_URL` | Non-pooled connection (для миграций) |
+| `AUTH_SECRET` | Секрет NextAuth (`openssl rand -base64 32`) |
+| `AUTH_GITHUB_ID` | GitHub OAuth App Client ID |
+| `AUTH_GITHUB_SECRET` | GitHub OAuth App Client Secret |
+| `NEXTAUTH_URL` | Базовый URL приложения |
 
-## Learn More
+## Команды
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev           # dev-сервер
+npm run build         # production build + tsc
+npx tsc --noEmit      # только проверка типов
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+npx prisma studio     # GUI для базы данных
+vercel --prod         # деплой в продакшн
+```

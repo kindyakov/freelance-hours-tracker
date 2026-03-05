@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { ChartSkeleton } from './HoursBarChart'
+import type { ActivityCategory } from '@prisma/client'
 
 // dynamic() with ssr:false must live in a Client Component.
 // Recharts (~200 kb gzipped) is kept out of the server bundle.
@@ -15,9 +16,15 @@ const EarningsAreaChart = dynamic(() => import('./EarningsAreaChart'), {
   ssr: false,
 })
 
-type Record = {
+type Segment = {
+  start: string
+  end: string
+  category: ActivityCategory
+}
+
+type DayRecord = {
   date: string | Date
-  segments: { start: string; end: string }[]
+  segments: Segment[]
 }
 
 type EarningPoint = {
@@ -26,7 +33,7 @@ type EarningPoint = {
 }
 
 type Props = {
-  records: Record[]
+  records: DayRecord[]
   allEarnings: EarningPoint[]
 }
 

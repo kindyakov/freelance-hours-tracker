@@ -3,24 +3,27 @@ import { Stack, Title, Paper, Text, Group, Badge } from '@mantine/core'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { DailyTable } from '@/components/dashboard/DailyTable'
+import { CategoryBreakdown } from '@/components/dashboard/CategoryBreakdown'
 import { formatHours, formatRub } from '@/lib/utils/format'
-import { totalHoursForSegments } from '@/lib/utils/time'
+import { calcHours, totalHoursForSegments } from '@/lib/utils/time'
+import { CATEGORY_ORDER } from '@/lib/utils/categories'
+import type { ActivityCategory } from '@prisma/client'
 import dayjs from 'dayjs'
+import 'dayjs/locale/ru'
 
 export default async function HistoryPage() {
   const session = await getSession()
   if (!session?.user?.id) redirect('/login')
 
-  // Fetch last 6 months of data — parallel
-  const [allRecords, allEarnings] = await Promise.all([
+  const [allRecords, allEarningEntries] = await Promise.all([
     prisma.record.findMany({
       where: { userId: session.user.id },
       include: { segments: { orderBy: { order: 'asc' } } },
       orderBy: { date: 'desc' },
     }),
-    prisma.earning.findMany({
+    prisma.earningEntry.findMany({
       where: { userId: session.user.id },
-      orderBy: { month: 'desc' },
+      orderBy: { date: 'desc' },
     }),
   ])
 
@@ -33,9 +36,12 @@ export default async function HistoryPage() {
     byMonth.set(key, existing)
   }
 
-  const earningsByMonth = new Map(
-    allEarnings.map((e) => [dayjs(e.month).format('YYYY-MM'), e]),
-  )
+  // Sum earning entries by month
+  const earningsByMonth = new Map<string, number>()
+  for (const entry of allEarningEntries) {
+    const key = dayjs(entry.date).format('YYYY-MM')
+    earningsByMonth.set(key, (earningsByMonth.get(key) ?? 0) + entry.amount)
+  }
 
   const months = Array.from(byMonth.entries()).sort(([a], [b]) =>
     b.localeCompare(a),
@@ -48,33 +54,47 @@ export default async function HistoryPage() {
       {months.length > 0 ? (
         months.map(([monthKey, records]) => {
           const totalHours = records.reduce(
-            (acc, r) => acc + totalHoursForSegments(r.segments),
+            (acc: number, r: typeof records[number]) => acc + totalHoursForSegments(r.segments),
             0,
           )
-          const earning = earningsByMonth.get(monthKey)
+          const monthEarnings = earningsByMonth.get(monthKey) ?? 0
+
+          const byCategory = Object.fromEntries(
+            CATEGORY_ORDER.map((c) => [c, 0]),
+          ) as Record<ActivityCategory, number>
+
+          for (const record of records) {
+            for (const seg of record.segments) {
+              byCategory[seg.category as ActivityCategory] += calcHours(seg.start, seg.end)
+            }
+          }
 
           return (
             <Paper key={monthKey} p="md" radius="md" withBorder>
               <Group justify="space-between" mb="md">
                 <Title order={4}>
-                  {dayjs(monthKey, 'YYYY-MM').format('MMMM YYYY')}
+                  {dayjs(monthKey, 'YYYY-MM').locale('ru').format('MMMM YYYY')}
                 </Title>
                 <Group gap="sm">
-                  <Badge variant="light" color="blue">
+                  <Badge variant="light" color="orange">
                     {formatHours(totalHours)}
                   </Badge>
-                  <Badge variant="light" color="teal">
+                  <Badge variant="light" color="yellow">
                     {records.length} {records.length === 1 ? 'день' : records.length < 5 ? 'дня' : 'дней'}
                   </Badge>
-                  {earning ? (
+                  {monthEarnings > 0 ? (
                     <Badge variant="light" color="green">
-                      {formatRub(earning.amount)}
+                      {formatRub(monthEarnings)}
                     </Badge>
                   ) : null}
                 </Group>
               </Group>
 
-              <DailyTable records={records} />
+              <CategoryBreakdown byCategory={byCategory} totalHours={totalHours} />
+
+              <div className="mt-4">
+                <DailyTable records={records} />
+              </div>
             </Paper>
           )
         })

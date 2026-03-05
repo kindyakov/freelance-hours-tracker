@@ -3,19 +3,43 @@
 import { BarChart } from '@mantine/charts'
 import { Paper, Text } from '@mantine/core'
 import dayjs from 'dayjs'
-import { totalHoursForSegments } from '@/lib/utils/time'
+import { calcHours } from '@/lib/utils/time'
+import { CATEGORY_META, CATEGORY_ORDER } from '@/lib/utils/categories'
+import type { ActivityCategory } from '@prisma/client'
 
-type Record = {
+type Segment = { start: string; end: string; category: ActivityCategory }
+type DayRecord = {
   date: string | Date
-  segments: { start: string; end: string }[]
+  segments: Segment[]
 }
 
-type Props = { records: Record[] }
+type Props = { records: DayRecord[] }
 
 export default function HoursBarChart({ records }: Props) {
-  const data = records.map((r) => ({
-    day: dayjs(r.date).format('D MMM'),
-    hours: Number(totalHoursForSegments(r.segments).toFixed(2)),
+  // Determine which categories have any data this month
+  const activeCategories = CATEGORY_ORDER.filter((cat) =>
+    records.some((r) => r.segments.some((s) => s.category === cat)),
+  )
+
+  const data = records.map((r) => {
+    const point: Record<string, string | number> = {
+      day: dayjs(r.date).format('D MMM'),
+    }
+    for (const cat of activeCategories) {
+      point[cat] = Number(
+        r.segments
+          .filter((s) => s.category === cat)
+          .reduce((acc, s) => acc + calcHours(s.start, s.end), 0)
+          .toFixed(2),
+      )
+    }
+    return point
+  })
+
+  const series = activeCategories.map((cat) => ({
+    name: cat,
+    color: CATEGORY_META[cat].color,
+    label: CATEGORY_META[cat].label,
   }))
 
   return (
@@ -27,10 +51,12 @@ export default function HoursBarChart({ records }: Props) {
         h={220}
         data={data}
         dataKey="day"
-        series={[{ name: 'hours', color: 'blue.6', label: 'Часы' }]}
+        series={series}
+        type="stacked"
         tickLine="none"
         gridAxis="y"
         withTooltip
+        withLegend
       />
     </Paper>
   )

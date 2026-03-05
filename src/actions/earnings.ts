@@ -3,36 +3,61 @@
 import { revalidatePath } from 'next/cache'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { upsertEarningsSchema } from '@/lib/utils/schemas'
+import { createEarningEntrySchema, updateEarningEntrySchema } from '@/lib/utils/schemas'
 
-export async function upsertEarnings(input: unknown) {
-  // Auth guard FIRST
+export async function createEarningEntry(input: unknown) {
   const session = await getSession()
   if (!session?.user?.id) throw new Error('Unauthorized')
 
-  const data = upsertEarningsSchema.parse(input)
-  const month = new Date(data.month)
+  const data = createEarningEntrySchema.parse(input)
 
-  const earning = await prisma.earning.upsert({
-    where: {
-      userId_month: {
-        userId: session.user.id,
-        month,
-      },
-    },
-    update: {
-      amount: data.amount,
+  const entry = await prisma.earningEntry.create({
+    data: {
+      userId:   session.user.id,
+      date:     new Date(data.date),
+      amount:   data.amount,
       currency: data.currency,
-    },
-    create: {
-      userId: session.user.id,
-      month,
-      amount: data.amount,
-      currency: data.currency,
+      note:     data.note ?? null,
     },
   })
 
   revalidatePath('/dashboard')
   revalidatePath('/history')
-  return earning
+  return entry
+}
+
+export async function updateEarningEntry(input: unknown) {
+  const session = await getSession()
+  if (!session?.user?.id) throw new Error('Unauthorized')
+
+  const data = updateEarningEntrySchema.parse(input)
+
+  // Ensure the entry belongs to this user before updating
+  const existing = await prisma.earningEntry.findUnique({ where: { id: data.id } })
+  if (!existing || existing.userId !== session.user.id) throw new Error('Not found')
+
+  const entry = await prisma.earningEntry.update({
+    where: { id: data.id },
+    data: {
+      amount: data.amount,
+      note:   data.note ?? null,
+    },
+  })
+
+  revalidatePath('/dashboard')
+  revalidatePath('/history')
+  return entry
+}
+
+export async function deleteEarningEntry(id: string) {
+  const session = await getSession()
+  if (!session?.user?.id) throw new Error('Unauthorized')
+
+  const existing = await prisma.earningEntry.findUnique({ where: { id } })
+  if (!existing || existing.userId !== session.user.id) throw new Error('Not found')
+
+  await prisma.earningEntry.delete({ where: { id } })
+
+  revalidatePath('/dashboard')
+  revalidatePath('/history')
 }

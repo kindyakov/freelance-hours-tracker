@@ -1,15 +1,20 @@
 import { memo } from 'react'
-import { Group, TextInput, ActionIcon, Text } from '@mantine/core'
+import { Group, ActionIcon, Text, Select } from '@mantine/core'
+import { TimeInput } from '@mantine/dates'
 import { Trash2 } from 'lucide-react'
 import { calcHours, detectMidnight } from '@/lib/utils/time'
 import { formatHours } from '@/lib/utils/format'
+import { CATEGORY_SELECT_DATA } from '@/lib/utils/categories'
+import type { ActivityCategory } from '@prisma/client'
 
 type Props = {
   index: number
   start: string
   end: string
+  category: ActivityCategory
   onStartChange: (value: string) => void
   onEndChange: (value: string) => void
+  onCategoryChange: (value: ActivityCategory) => void
   onRemove: () => void
   canRemove: boolean
   startError?: string
@@ -20,8 +25,10 @@ export const TimeSegmentRow = memo(function TimeSegmentRow({
   index,
   start,
   end,
+  category,
   onStartChange,
   onEndChange,
+  onCategoryChange,
   onRemove,
   canRemove,
   startError,
@@ -34,25 +41,33 @@ export const TimeSegmentRow = memo(function TimeSegmentRow({
 
   return (
     <Group align="flex-start" gap="sm">
-      <TextInput
+      <TimeInput
         label={index === 0 ? 'Начало' : undefined}
-        placeholder="09:00"
         value={start}
         onChange={(e) => onStartChange(e.currentTarget.value)}
         error={startError}
         size="sm"
-        className="w-24"
+        className="w-28"
         aria-label={`Промежуток ${index + 1} начало`}
       />
-      <TextInput
+      <TimeInput
         label={index === 0 ? 'Конец' : undefined}
-        placeholder="17:30"
         value={end}
         onChange={(e) => onEndChange(e.currentTarget.value)}
         error={endError}
         size="sm"
-        className="w-24"
+        className="w-28"
         aria-label={`Промежуток ${index + 1} конец`}
+      />
+      <Select
+        label={index === 0 ? 'Категория' : undefined}
+        data={CATEGORY_SELECT_DATA}
+        value={category}
+        onChange={(v) => { if (v) onCategoryChange(v as ActivityCategory) }}
+        allowDeselect={false}
+        size="sm"
+        className="w-36"
+        aria-label={`Промежуток ${index + 1} категория`}
       />
 
       {hours !== null ? (

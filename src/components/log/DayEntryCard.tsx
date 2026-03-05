@@ -4,8 +4,10 @@ import { Pencil, Trash2 } from 'lucide-react'
 import dayjs from 'dayjs'
 import { totalHoursForSegments } from '@/lib/utils/time'
 import { formatHours } from '@/lib/utils/format'
+import { CATEGORY_META } from '@/lib/utils/categories'
+import type { ActivityCategory } from '@prisma/client'
 
-type Segment = { start: string; end: string; order: number }
+type Segment = { start: string; end: string; order: number; category: ActivityCategory }
 type Record = {
   id: string
   date: string | Date
@@ -31,7 +33,7 @@ export const DayEntryCard = memo(function DayEntryCard({
       <Group justify="space-between" mb="xs">
         <Text fw={600}>{dayjs(record.date).format('ddd, D MMM')}</Text>
         <Group gap="xs">
-          <Badge variant="light" color="blue">
+          <Badge variant="light" color="orange">
             {formatHours(totalHours)}
           </Badge>
           <Tooltip label="Редактировать">
@@ -59,11 +61,14 @@ export const DayEntryCard = memo(function DayEntryCard({
       </Group>
 
       <div className="flex flex-wrap gap-1">
-        {record.segments.map((seg, i) => (
-          <Badge key={i} variant="outline" size="sm">
-            {seg.start}–{seg.end}
-          </Badge>
-        ))}
+        {record.segments.map((seg, i) => {
+          const meta = CATEGORY_META[seg.category]
+          return (
+            <Badge key={i} variant="light" size="sm" color={meta.badgeColor}>
+              {meta.label} · {seg.start}–{seg.end}
+            </Badge>
+          )
+        })}
       </div>
 
       {record.notes ? (
