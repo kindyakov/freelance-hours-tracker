@@ -7,7 +7,7 @@ export default function DashboardLoading() {
 		<Stack gap='lg'>
 			<Title order={2}>Дашборд</Title>
 			<StatCardsSkeleton />
-			<div className='flex gap-5 max-lg:flex-col'>
+			<div className='flex gap-5 w-full max-lg:flex-col'>
 				<ChartSkeleton />
 				<ChartSkeleton />
 			</div>
