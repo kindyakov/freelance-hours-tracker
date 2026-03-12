@@ -47,7 +47,7 @@ export function buildSoftwareApplicationSchema(siteUrl = getSiteUrl()) {
 		offers: {
 			'@type': 'Offer',
 			price: '0',
-			priceCurrency: 'USD',
+			priceCurrency: 'RUB',
 		},
 		creator: {
 			'@type': 'Person',
