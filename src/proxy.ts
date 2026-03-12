@@ -1,15 +1,12 @@
 import { auth } from '@/lib/auth'
+import { isPublicPath } from '@/lib/route-access'
 import { NextResponse } from 'next/server'
 
 export default auth((req) => {
   const { nextUrl, auth: session } = req
   const isAuthenticated = !!session?.user?.id
 
-  const isPublicPath =
-    nextUrl.pathname.startsWith('/login') ||
-    nextUrl.pathname.startsWith('/api/auth')
-
-  if (!isAuthenticated && !isPublicPath) {
+  if (!isAuthenticated && !isPublicPath(nextUrl.pathname)) {
     return NextResponse.redirect(new URL('/login', nextUrl))
   }
 

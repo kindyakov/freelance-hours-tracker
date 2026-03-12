@@ -3,6 +3,13 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { ColorSchemeScript, MantineProvider, createTheme } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
 import { QueryProvider } from '@/components/providers/QueryProvider'
+import {
+  SITE_DESCRIPTION,
+  SITE_KEYWORDS,
+  SITE_NAME,
+  absoluteUrl,
+  getSiteUrl,
+} from '@/lib/site'
 import './globals.css'
 
 const geistSans = Geist({
@@ -37,8 +44,29 @@ const theme = createTheme({
 })
 
 export const metadata: Metadata = {
-  title: 'Учёт часов',
-  description: 'Учёт рабочих часов и заработка фрилансера',
+  metadataBase: new URL(getSiteUrl()),
+  title: {
+    default: `${SITE_NAME} — простой учёт часов и заработка`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  keywords: SITE_KEYWORDS,
+  alternates: {
+    canonical: absoluteUrl('/'),
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'ru_RU',
+    url: absoluteUrl('/'),
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} — простой учёт часов и заработка`,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${SITE_NAME} — простой учёт часов и заработка`,
+    description: SITE_DESCRIPTION,
+  },
 }
 
 export default function RootLayout({

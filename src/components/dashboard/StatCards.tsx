@@ -43,7 +43,7 @@ const CARDS = [
 export function StatCards({ stats }: Props) {
 	return (
 		<div className='grid grid-cols-2 lg:grid-cols-4 gap-3'>
-			{CARDS.map(({ key, label, icon: Icon, glowClass, iconClass, format }) => (
+			{CARDS.map(({ key, label, icon: Icon, iconClass, format }) => (
 				<div
 					key={key}
 					className='group relative overflow-hidden rounded-xl p-6 border border-white/5'
@@ -105,3 +105,4 @@ export function StatCardsSkeleton() {
 		</div>
 	)
 }
+

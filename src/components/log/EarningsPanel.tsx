@@ -4,7 +4,6 @@ import { useState } from 'react'
 import {
   NumberInput,
   Button,
-  Group,
   Text,
   ActionIcon,
   Tooltip,
@@ -227,3 +226,5 @@ export function EarningsPanel() {
     </div>
   )
 }
+
+

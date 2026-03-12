@@ -1,8 +1,18 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { Paper, Title, Text, Button, Stack, Center } from '@mantine/core'
 import { Github } from 'lucide-react'
 import { getSession } from '@/lib/auth'
 import { signInWithGitHub } from '@/actions/auth'
+
+export const metadata: Metadata = {
+	title: 'Вход',
+	description: 'Вход в RoastFlow через GitHub.',
+	robots: {
+		index: false,
+		follow: true,
+	},
+}
 
 export default async function LoginPage() {
 	const session = await getSession()
@@ -15,7 +25,7 @@ export default async function LoginPage() {
 					<Stack align='center' gap='lg'>
 						<div className='text-center'>
 							<Title order={2} mb='xs'>
-								FreelanceHours
+								RoastFlow
 							</Title>
 							<Text c='dimmed' size='sm'>
 								Учёт часов и заработка

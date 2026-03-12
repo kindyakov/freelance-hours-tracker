@@ -35,7 +35,7 @@ export function Sidebar() {
 				</div>
 				<div>
 					<p className='text-[15px] font-bold leading-none tracking-tight text-white'>
-						FreelanceHours
+						RoastFlow
 					</p>
 					<p
 						className='text-[10px] font-semibold uppercase tracking-widest mt-1'

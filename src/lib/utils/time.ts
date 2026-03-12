@@ -11,7 +11,7 @@ function toMinutes(time: string): number {
  * Handles overnight segments (end < start → crosses midnight).
  */
 export function calcHours(start: string, end: string): number {
-  let startMin = toMinutes(start)
+  const startMin = toMinutes(start)
   let endMin = toMinutes(end)
   if (endMin <= startMin) endMin += 24 * 60
   return (endMin - startMin) / 60
@@ -32,3 +32,4 @@ export function totalHoursForSegments(
 ): number {
   return segments.reduce((acc, seg) => acc + calcHours(seg.start, seg.end), 0)
 }
+

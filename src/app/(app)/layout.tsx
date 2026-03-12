@@ -1,9 +1,17 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth'
 import { SessionProvider } from '@/components/providers/SessionProvider'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { MonthNavigator } from '@/components/layout/MonthNavigator'
+
+export const metadata: Metadata = {
+	robots: {
+		index: false,
+		follow: true,
+	},
+}
 
 export default async function AppLayout({
 	children,
@@ -20,9 +28,7 @@ export default async function AppLayout({
 				<div className='flex flex-col flex-1 min-w-0'>
 					{/* Top bar */}
 					<header className='flex items-center justify-between border-b border-(--border) px-4 py-3 bg-(--surface)'>
-						<span className='md:hidden font-bold text-white'>
-							FreelanceHours
-						</span>
+						<span className='md:hidden font-bold text-white'>RoastFlow</span>
 						<MonthNavigator />
 					</header>
 
