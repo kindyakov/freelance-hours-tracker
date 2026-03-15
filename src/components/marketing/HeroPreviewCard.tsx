@@ -31,8 +31,14 @@ function applyPreviewStyles(node: HTMLDivElement, point: PointerPosition) {
 	node.style.setProperty('--hero-preview-rotate-x', `${rotateX.toFixed(2)}deg`)
 	node.style.setProperty('--hero-preview-rotate-y', `${rotateY.toFixed(2)}deg`)
 	node.style.setProperty('--hero-preview-scale', ACTIVE_SCALE.toFixed(3))
-	node.style.setProperty('--hero-preview-glow-x', `${(point.x * 100).toFixed(2)}%`)
-	node.style.setProperty('--hero-preview-glow-y', `${(point.y * 100).toFixed(2)}%`)
+	node.style.setProperty(
+		'--hero-preview-glow-x',
+		`${(point.x * 100).toFixed(2)}%`,
+	)
+	node.style.setProperty(
+		'--hero-preview-glow-y',
+		`${(point.y * 100).toFixed(2)}%`,
+	)
 	node.style.setProperty('--hero-preview-glow-opacity', '1')
 	node.dataset.active = 'true'
 }
@@ -120,7 +126,7 @@ export function HeroPreviewCard() {
 			onPointerLeave={handlePointerLeave}
 		>
 			<div className='hero-preview-content'>
-				<div className='mb-6 flex items-center justify-between'>
+				<div className='mb-6 flex items-center gap-3 justify-between max-[480px]:flex-col max-[480px]:items-start'>
 					<div>
 						<Text size='sm' fw={700} style={{ color: '#f4af25' }}>
 							{sectionContent.previewEyebrow}

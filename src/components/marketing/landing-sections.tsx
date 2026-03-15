@@ -43,23 +43,21 @@ function PreviewByKey({ preview }: { preview: ProductPreviewKey }) {
 
 export function HeroSection() {
 	return (
-		<section className='py-20'>
+		<section className='pb-20 pt-30 max-sm:pb-10'>
 			<div className='grid items-center gap-12 lg:grid-cols-[1.02fr_0.98fr]'>
 				<div className='landing-reveal landing-delay-1'>
 					<Badge radius='xl' variant='light' color='orange'>
 						{sectionContent.heroBadge}
 					</Badge>
-					<h1 className='mt-4 text-5xl font-bold text-white'>
+					<h1 className='mt-4 text-5xl font-bold text-white max-xl:text-4xl max-sm:text-3xl'>
 						{sectionContent.heroTitle}
 					</h1>
-					<Text
-						mt='xl'
-						size='xl'
-						className='max-w-2xl'
+					<p
+						className='max-w-2xl text-xl max-xl:text-lg mt-4 max-sm:text-base'
 						style={{ color: '#d4c9bd' }}
 					>
 						{sectionContent.heroDescription}
-					</Text>
+					</p>
 					<Group mt='xl' gap='md'>
 						<Button
 							component='a'
@@ -69,7 +67,7 @@ export function HeroSection() {
 							size='lg'
 							radius='xl'
 							color='orange'
-							className='landing-button landing-button-primary'
+							className='landing-button landing-button-primary max-[480px]:w-full!'
 							leftSection={<Github size={18} />}
 						>
 							Смотреть код на GitHub
@@ -80,7 +78,7 @@ export function HeroSection() {
 							size='lg'
 							radius='xl'
 							variant='default'
-							className='landing-button landing-button-secondary'
+							className='landing-button landing-button-secondary max-[480px]:w-full!'
 							rightSection={<ArrowRight size={18} />}
 							styles={{
 								root: {
@@ -119,16 +117,15 @@ export function HeroSection() {
 
 export function PainSection() {
 	return (
-		<section className='landing-reveal landing-delay-2 py-20'>
+		<section className='landing-reveal landing-delay-2 py-20 max-sm:py-10'>
 			<SectionHeading {...sectionContent.problem} />
 			<SimpleGrid cols={{ base: 1, md: 3 }} spacing='lg' mt='xl'>
 				{painPoints.map(point => (
 					<Paper
 						key={point.title}
-						radius={28}
 						p='xl'
 						withBorder
-						className='landing-card'
+						className='landing-card landing-card max-xl:p-4! rounded-3xl! max-sm:rounded-2xl!'
 						style={{
 							borderColor: 'rgba(255,255,255,0.07)',
 							background:
@@ -153,16 +150,15 @@ export function PainSection() {
 
 export function BenefitsSection() {
 	return (
-		<section className='landing-reveal landing-delay-2 py-20'>
+		<section className='landing-reveal landing-delay-2 py-20 max-sm:py-10'>
 			<SectionHeading {...sectionContent.benefits} />
 			<SimpleGrid cols={{ base: 1, md: 3 }} spacing='lg' mt='xl'>
 				{benefits.map(({ icon: Icon, title, description }) => (
 					<Paper
 						key={title}
-						radius={28}
 						p='xl'
 						withBorder
-						className='landing-card'
+						className='landing-card landing-card max-xl:p-4! rounded-3xl! max-sm:rounded-2xl!'
 						style={{
 							borderColor: 'rgba(255,255,255,0.07)',
 							background:
@@ -192,7 +188,7 @@ export function BenefitsSection() {
 
 export function ProductSection() {
 	return (
-		<section className='landing-reveal landing-delay-2 py-20'>
+		<section className='landing-reveal landing-delay-2 py-20 max-sm:py-10'>
 			<SectionHeading {...sectionContent.product} />
 			<Stack gap='lg' mt='xl'>
 				{productWindows.map(item => (
@@ -213,16 +209,15 @@ export function ProductSection() {
 
 export function StepsSection() {
 	return (
-		<section className='landing-reveal landing-delay-2 py-20'>
+		<section className='landing-reveal landing-delay-2 py-20 max-sm:py-10'>
 			<SectionHeading {...sectionContent.steps} />
 			<SimpleGrid cols={{ base: 1, md: 3 }} spacing='lg' mt='xl'>
 				{steps.map(item => (
 					<Paper
 						key={item.step}
-						radius={28}
 						p='xl'
 						withBorder
-						className='landing-card'
+						className='landing-card landing-card max-xl:p-4! rounded-3xl! max-sm:rounded-2xl!'
 						style={{
 							borderColor: 'rgba(255,255,255,0.08)',
 							background: 'rgba(255,255,255,0.03)',
@@ -246,12 +241,11 @@ export function StepsSection() {
 
 export function FinalCtaSection() {
 	return (
-		<section className='landing-reveal landing-delay-2 py-20'>
+		<section className='landing-reveal landing-delay-2 py-20 max-sm:py-10'>
 			<Paper
-				radius={36}
 				p='xl'
 				withBorder
-				className='landing-card'
+				className='landing-card rounded-4xl! max-sm:p-4! max-sm:rounded-3xl!'
 				style={{
 					borderColor: 'rgba(255,255,255,0.08)',
 					background:
@@ -266,14 +260,14 @@ export function FinalCtaSection() {
 						<Title
 							order={2}
 							mt='lg'
-							className='max-w-2xl text-3xl text-white md:text-5xl'
+							className='max-w-2xl text-white text-3xl! max-sm:text-2xl!'
 						>
 							{sectionContent.finalCtaTitle}
 						</Title>
 						<Text
 							mt='lg'
 							size='lg'
-							className='max-w-2xl'
+							className='max-w-2xl max-sm:text-base!'
 							style={{ color: '#d4c9bd' }}
 						>
 							Репозиторий открыт на GitHub:{' '}
@@ -334,7 +328,7 @@ export function FinalCtaSection() {
 
 export function LandingShell({ children }: { children: React.ReactNode }) {
 	return (
-		<Container size='xl' className='relative py-6 md:py-8'>
+		<Container size='xl' className='relative py-0!'>
 			{children}
 		</Container>
 	)

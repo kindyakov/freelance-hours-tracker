@@ -3,7 +3,7 @@ import { Container, Text } from '@mantine/core'
 
 export function Footer() {
 	return (
-		<footer className='mt-16 border-t border-white/8 py-8'>
+		<footer className='mt-16 border-t border-white/8 py-8 max-sm:mt-8'>
 			<Container
 				size='xl'
 				className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'
