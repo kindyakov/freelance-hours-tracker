@@ -1,33 +1,43 @@
-import { redirect } from 'next/navigation'
+'use client'
+
 import { Stack, Title, Paper, Text, Group, Badge } from '@mantine/core'
-import { getSession } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
 import { DailyTable } from '@/components/dashboard/DailyTable'
 import { CategoryBreakdown } from '@/components/dashboard/CategoryBreakdown'
 import { formatHours, formatRub } from '@/lib/utils/format'
 import { calcHours, totalHoursForSegments } from '@/lib/utils/time'
 import { CATEGORY_ORDER } from '@/lib/utils/categories'
+import { useAllRecords } from '@/lib/queries/useRecords'
+import { useAllEarningEntries } from '@/lib/queries/useEarnings'
 import type { ActivityCategory } from '@prisma/client'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ru'
 
-export default async function HistoryPage() {
-  const session = await getSession()
-  if (!session?.user?.id) redirect('/login')
+export default function HistoryPage() {
+  const { data: allRecords = [], isLoading: isRecordsLoading, error: recordsError } = useAllRecords()
+  const {
+    data: allEarningEntries = [],
+    isLoading: isEarningsLoading,
+    error: earningsError,
+  } = useAllEarningEntries()
 
-  const [allRecords, allEarningEntries] = await Promise.all([
-    prisma.record.findMany({
-      where: { userId: session.user.id },
-      include: { segments: { orderBy: { order: 'asc' } } },
-      orderBy: { date: 'desc' },
-    }),
-    prisma.earningEntry.findMany({
-      where: { userId: session.user.id },
-      orderBy: { date: 'desc' },
-    }),
-  ])
+  if (recordsError || earningsError) {
+    return (
+      <Stack gap='xl'>
+        <Title order={2}>История</Title>
+        <Text c='red.4'>Не удалось загрузить историю. Обновите страницу.</Text>
+      </Stack>
+    )
+  }
 
-  // Group records by month
+  if (isRecordsLoading || isEarningsLoading) {
+    return (
+      <Stack gap='xl'>
+        <Title order={2}>История</Title>
+        <Text c='dimmed'>Загрузка…</Text>
+      </Stack>
+    )
+  }
+
   const byMonth = new Map<string, typeof allRecords>()
   for (const record of allRecords) {
     const key = dayjs(record.date).format('YYYY-MM')
@@ -36,19 +46,16 @@ export default async function HistoryPage() {
     byMonth.set(key, existing)
   }
 
-  // Sum earning entries by month
   const earningsByMonth = new Map<string, number>()
   for (const entry of allEarningEntries) {
     const key = dayjs(entry.date).format('YYYY-MM')
     earningsByMonth.set(key, (earningsByMonth.get(key) ?? 0) + entry.amount)
   }
 
-  const months = Array.from(byMonth.entries()).sort(([a], [b]) =>
-    b.localeCompare(a),
-  )
+  const months = Array.from(byMonth.entries()).sort(([a], [b]) => b.localeCompare(a))
 
   return (
-    <Stack gap="xl">
+    <Stack gap='xl'>
       <Title order={2}>История</Title>
 
       {months.length > 0 ? (
@@ -70,20 +77,18 @@ export default async function HistoryPage() {
           }
 
           return (
-            <Paper key={monthKey} p="md" radius="md" withBorder>
-              <Group justify="space-between" mb="md">
-                <Title order={4}>
-                  {dayjs(monthKey, 'YYYY-MM').locale('ru').format('MMMM YYYY')}
-                </Title>
-                <Group gap="sm">
-                  <Badge variant="light" color="orange">
+            <Paper key={monthKey} p='md' radius='md' withBorder>
+              <Group justify='space-between' mb='md'>
+                <Title order={4}>{dayjs(monthKey, 'YYYY-MM').locale('ru').format('MMMM YYYY')}</Title>
+                <Group gap='sm'>
+                  <Badge variant='light' color='orange'>
                     {formatHours(totalHours)}
                   </Badge>
-                  <Badge variant="light" color="yellow">
+                  <Badge variant='light' color='yellow'>
                     {records.length} {records.length === 1 ? 'день' : records.length < 5 ? 'дня' : 'дней'}
                   </Badge>
                   {monthEarnings > 0 ? (
-                    <Badge variant="light" color="green">
+                    <Badge variant='light' color='green'>
                       {formatRub(monthEarnings)}
                     </Badge>
                   ) : null}
@@ -92,14 +97,14 @@ export default async function HistoryPage() {
 
               <CategoryBreakdown byCategory={byCategory} totalHours={totalHours} />
 
-              <div className="mt-4">
+              <div className='mt-4'>
                 <DailyTable records={records} />
               </div>
             </Paper>
           )
         })
       ) : (
-        <Text c="dimmed" ta="center" py="xl">
+        <Text c='dimmed' ta='center' py='xl'>
           Записей пока нет. Начните учёт часов на странице «Учёт часов».
         </Text>
       )}

@@ -56,8 +56,15 @@ export async function deleteEarningEntry(id: string) {
   const existing = await prisma.earningEntry.findUnique({ where: { id } })
   if (!existing || existing.userId !== session.user.id) throw new Error('Not found')
 
-  await prisma.earningEntry.delete({ where: { id } })
+  const deletedEntry = await prisma.earningEntry.delete({
+    where: { id },
+    select: {
+      id: true,
+      date: true,
+    },
+  })
 
   revalidatePath('/dashboard')
   revalidatePath('/history')
+  return deletedEntry
 }

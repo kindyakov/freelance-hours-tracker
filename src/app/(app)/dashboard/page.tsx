@@ -1,96 +1,96 @@
-import { redirect } from 'next/navigation'
-import { Suspense } from 'react'
-import { Stack, Title } from '@mantine/core'
-import { getSession } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+'use client'
+
+import { Stack, Text, Title } from '@mantine/core'
+import dayjs from 'dayjs'
 import { StatCards, StatCardsSkeleton } from '@/components/dashboard/StatCards'
 import { DailyTable } from '@/components/dashboard/DailyTable'
 import { DashboardCharts } from '@/components/dashboard/DashboardCharts'
 import { ChartSkeleton } from '@/components/dashboard/HoursBarChart'
 import { CategoryBreakdown } from '@/components/dashboard/CategoryBreakdown'
-import { calcHours, totalHoursForSegments } from '@/lib/utils/time'
+import { useAppStore } from '@/store/useAppStore'
+import { useMonthlyStatsWithRecords } from '@/lib/queries/useMonthlyStats'
+import { useAllEarningEntries } from '@/lib/queries/useEarnings'
 import { CATEGORY_ORDER } from '@/lib/utils/categories'
 import type { ActivityCategory } from '@prisma/client'
-import dayjs from 'dayjs'
 
-export default async function DashboardPage() {
-	const session = await getSession()
-	if (!session?.user?.id) redirect('/login')
+export default function DashboardPage() {
+	const { selectedMonth } = useAppStore()
+	const {
+		data: monthlyData,
+		isLoading: isMonthlyDataLoading,
+		error: monthlyDataError,
+	} = useMonthlyStatsWithRecords(selectedMonth)
+	const {
+		data: allEarningEntries = [],
+		isLoading: isAllEarningsLoading,
+		error: allEarningsError,
+	} = useAllEarningEntries()
 
-	const monthStart = dayjs().startOf('month').toDate()
-	const monthEnd = dayjs().endOf('month').toDate()
+	if (monthlyDataError || allEarningsError) {
+		return (
+			<Stack gap='lg'>
+				<Title order={2}>Дашборд</Title>
+				<Text c='red.4'>Не удалось загрузить данные. Обновите страницу.</Text>
+			</Stack>
+		)
+	}
 
-	// Parallel fetch — never await sequentially when data is independent.
-	const [records, earningEntries] = await Promise.all([
-		prisma.record.findMany({
-			where: {
-				userId: session.user.id,
-				date: { gte: monthStart, lte: monthEnd },
-			},
-			include: { segments: { orderBy: { order: 'asc' } } },
-			orderBy: { date: 'asc' },
+	const allEarningsByMonth = new Map<string, number>()
+	for (const entry of allEarningEntries) {
+		const key = dayjs(entry.date).format('YYYY-MM')
+		allEarningsByMonth.set(
+			key,
+			(allEarningsByMonth.get(key) ?? 0) + entry.amount,
+		)
+	}
+
+	const allEarnings = Array.from(allEarningsByMonth.entries()).map(
+		([month, amount]) => ({
+			month: dayjs(month, 'YYYY-MM').startOf('month').toDate(),
+			amount,
 		}),
-		prisma.earningEntry.findMany({
-			where: { userId: session.user.id },
-			orderBy: { date: 'asc' },
-		}),
-	])
-
-	const totalHours = records.reduce(
-		(acc: number, r: typeof records[number]) => acc + totalHoursForSegments(r.segments),
-		0,
 	)
 
+	const records = monthlyData?.records ?? []
 	const byCategory = Object.fromEntries(
-		CATEGORY_ORDER.map(c => [c, 0]),
+		CATEGORY_ORDER.map(category => [
+			category,
+			monthlyData?.byCategory?.[category] ?? 0,
+		]),
 	) as Record<ActivityCategory, number>
-
-	for (const record of records) {
-		for (const seg of record.segments) {
-			byCategory[seg.category as ActivityCategory] += calcHours(seg.start, seg.end)
-		}
-	}
-
-	// Current month earnings total
-	const currentMonthEarnings = earningEntries
-		.filter(e => dayjs(e.date).isSame(monthStart, 'month'))
-		.reduce((s: number, e: typeof earningEntries[number]) => s + e.amount, 0)
-
-	// Aggregate entries by month for the area chart
-	const earningsByMonthMap = new Map<string, number>()
-	for (const entry of earningEntries) {
-		const key = dayjs(entry.date).format('YYYY-MM')
-		earningsByMonthMap.set(key, (earningsByMonthMap.get(key) ?? 0) + entry.amount)
-	}
-	const allEarnings = Array.from(earningsByMonthMap.entries()).map(([month, amount]) => ({
-		month: dayjs(month, 'YYYY-MM').startOf('month').toDate(),
-		amount,
-	}))
-
-	const stats = {
-		totalHours,
-		totalDays: records.length,
-		avgHoursPerDay: records.length > 0 ? totalHours / records.length : 0,
-		earnings: currentMonthEarnings,
-		byCategory,
-	}
+	const stats = monthlyData
+		? {
+				totalHours: monthlyData.totalHours,
+				totalDays: monthlyData.totalDays,
+				avgHoursPerDay: monthlyData.avgHoursPerDay,
+				earnings: monthlyData.earnings ?? 0,
+				byCategory,
+			}
+		: null
 
 	return (
 		<Stack gap='lg'>
 			<Title order={2}>Дашборд</Title>
 
-			<Suspense fallback={<StatCardsSkeleton />}>
+			{isMonthlyDataLoading || !stats ? (
+				<StatCardsSkeleton />
+			) : (
 				<StatCards stats={stats} />
-			</Suspense>
+			)}
 
-			{/* DashboardCharts is a Client Component — dynamic ssr:false is valid there */}
-			<Suspense fallback={<ChartSkeleton />}>
+			{isMonthlyDataLoading || isAllEarningsLoading ? (
+				<ChartSkeleton />
+			) : (
 				<DashboardCharts records={records} allEarnings={allEarnings} />
-			</Suspense>
+			)}
 
-			<div className='flex w-full gap-5 max-lg:flex-col'>
-				<CategoryBreakdown byCategory={byCategory} totalHours={totalHours} />
-
+			<div className='flex w-full items-start gap-5 max-lg:flex-col'>
+				{stats ? (
+					<CategoryBreakdown
+						byCategory={stats.byCategory}
+						totalHours={stats.totalHours}
+					/>
+				) : null}
 				<DailyTable records={records} />
 			</div>
 		</Stack>

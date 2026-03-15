@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import dayjs from 'dayjs'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import dayjs from 'dayjs'
 
 export async function GET(request: NextRequest) {
   const session = await getSession()
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     : dayjs().startOf('month').toDate()
   const monthEnd = dayjs(monthStart).endOf('month').toDate()
 
-  const entries = await prisma.earningEntry.findMany({
+  const records = await prisma.record.findMany({
     where:
       scope === 'all'
         ? { userId: session.user.id }
@@ -26,10 +26,9 @@ export async function GET(request: NextRequest) {
             userId: session.user.id,
             date: { gte: monthStart, lte: monthEnd },
           },
+    include: { segments: { orderBy: { order: 'asc' } } },
     orderBy: { date: scope === 'all' ? 'desc' : 'asc' },
   })
 
-  const total = entries.reduce((s, e) => s + e.amount, 0)
-
-  return NextResponse.json({ entries, total })
+  return NextResponse.json({ records })
 }

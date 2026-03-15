@@ -51,13 +51,18 @@ export async function deleteRecord(recordId: string) {
   if (!session?.user?.id) throw new Error('Unauthorized')
 
   // The `userId` filter prevents deleting another user's data.
-  await prisma.record.delete({
+  const deletedRecord = await prisma.record.delete({
     where: {
       id: recordId,
       userId: session.user.id,
+    },
+    select: {
+      id: true,
+      date: true,
     },
   })
 
   revalidatePath('/dashboard')
   revalidatePath('/history')
+  return deletedRecord
 }
